@@ -1,12 +1,11 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
-# during dev, should point to your local machine
+  title: 娱乐CMS 系统
+  description: 该系统 Mock 的是 [admin-template](https://github.com/iamjoel/admin-template)。路由的后缀按照如下约定。列表 `list`,详情 `detail/:id`, 新增 `add`, 编辑 `edit/:id`，删除 `del/:id`。文档格式：[OpenAPI Specification 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md)。
+
 host: localhost:10010
-# basePath prefixes all resource paths 
 basePath: /api
-# 
 schemes:
   - http
 consumes:
@@ -16,6 +15,8 @@ produces:
 tags:
 - name: "歌"
   description: "歌"
+- name: "歌手"
+  description: "歌手"
 paths:
   /song/list:
     x-swagger-router-controller: swagger_raw
@@ -37,7 +38,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/SongList"
+            properties:
+              data:
+                $ref: "#/definitions/SongList"
+              pager:
+                $ref: "#/definitions/Pager"
         default:
           description: Error
           schema:
@@ -57,7 +62,9 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Song"
+            properties:
+              data:
+                $ref: "#/definitions/Song"
         default:
           description: Error
           schema:
@@ -72,7 +79,6 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "order placed for purchasing the pet"
         required: true
         schema:
           $ref: "#/definitions/Song"
@@ -84,39 +90,120 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"  
+            $ref: "#/definitions/ErrorResponse"
+  /song/edit/{id}:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: id
+        in: path
+        description: 歌曲id
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Song"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /song/del/{id}:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: id
+        in: path
+        description: 歌曲id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /singer/list:
+    x-swagger-router-controller: swagger_raw
+    get:
+      tags:
+      - "歌手"
+      parameters:
+        - name: name
+          in: query
+          description: 姓名
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                $ref: "#/definitions/SingerList"
+              pager:
+                $ref: "#/definitions/Pager"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  # 拿 swagger 数据       
   /swagger:
     x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
+
 definitions:
   Song:
     properties:
-      data: 
-        type: object
-        properties:
-          id:
-            type: string
-          name:
-            type: string
-          song:
-            type: string
-          other:
-            type: number
-          test:
-            type: string
-            format: date
-          age:
-            type: "integer"
-            format: "int64"
+      id:
+        type: string
+      name:
+        type: string
+      singer:
+        $ref: '#/definitions/Singer'
+      createTime:
+        type: string
+        format: date
   SongList:
     properties:
-      data:
-        type: object
-        properties:
-          list:
-            type: array
-            items:
-              $ref: '#/definitions/Song'
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Song'
+  Singer:
+    properties:
+      name:
+        type: string
+      birthday:
+        type: string
+        format: date
+  SingerList:
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Singer'
+  Pager:
+    properties:
+      total:
+        type: number
+        description: 总共多少页
   SuccessResponse:
     properties:
       errcode:
