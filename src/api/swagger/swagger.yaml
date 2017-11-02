@@ -1,0 +1,129 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /api
+# 
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+- name: "歌"
+  description: "歌"
+paths:
+  /song/list:
+    x-swagger-router-controller: swagger_raw
+    get:
+      tags:
+      - "歌"
+      parameters:
+        - name: name
+          in: query
+          description: 名称
+          required: false
+          type: string
+        - name: singer
+          in: query
+          description: 歌手
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SongList"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /song/detail/{id}:
+    x-swagger-router-controller: swagger_raw
+    get:
+      tags:
+      - "歌"
+      parameters:
+        - name: id
+          in: path
+          description: 歌曲id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Song"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /song/add:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "order placed for purchasing the pet"
+        required: true
+        schema:
+          $ref: "#/definitions/Song"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"  
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  Song:
+    properties:
+      data: 
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+          song:
+            type: string
+          other:
+            type: number
+          test:
+            type: string
+            format: date
+          age:
+            type: "integer"
+            format: "int64"
+  SongList:
+    properties:
+      data:
+        type: object
+        properties:
+          list:
+            type: array
+            items:
+              $ref: '#/definitions/Song'
+  SuccessResponse:
+    properties:
+      errcode:
+        type: number
+  ErrorResponse:
+    properties:
+      errcode:
+        type: number
+      errorMessage:
+        type: string
