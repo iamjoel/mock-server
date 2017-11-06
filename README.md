@@ -7,3 +7,6 @@
 1. `cd src`
 1. 启动 `npm start`
 1. 编辑或预览 `npm run edit`
+
+## 其他
+接口数据存在： `src/api/swagger/swagger.yaml`。

@@ -148,7 +148,7 @@ paths:
       parameters:
         - name: name
           in: query
-          description: 姓名
+          description: 名称
           required: false
           type: string
       responses:
@@ -164,6 +164,99 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /singer/detail/{id}:
+    x-swagger-router-controller: swagger_raw
+    get:
+      tags:
+      - "歌手"
+      parameters:
+        - name: id
+          in: path
+          description: 歌手id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                $ref: "#/definitions/Singer"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /singer/add:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌手"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Singer"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /singer/edit/{id}:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌手"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: id
+        in: path
+        description: 歌手id
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Singer"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /singer/del/{id}:
+    x-swagger-router-controller: swagger_raw
+    post:
+      tags:
+      - "歌手"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: id
+        in: path
+        description: 歌手id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   # 拿 swagger 数据       
   /swagger:
     x-swagger-pipe: swagger_raw
@@ -175,6 +268,7 @@ definitions:
         type: string
       name:
         type: string
+        enum: ['Life is Like a boat', '奔']
       singer:
         $ref: '#/definitions/Singer'
       createTime:
@@ -188,8 +282,11 @@ definitions:
           $ref: '#/definitions/Song'
   Singer:
     properties:
+      id:
+        type: string
       name:
         type: string
+        enum: ['孙燕姿']
       birthday:
         type: string
         format: date
@@ -203,11 +300,13 @@ definitions:
     properties:
       total:
         type: number
-        description: 总共多少页
+        enum: [31] # 测试分页
+        description: 总共多少条
   SuccessResponse:
     properties:
       errcode:
         type: number
+        enum: [0] # 固定是0
   ErrorResponse:
     properties:
       errcode:
