@@ -266,6 +266,7 @@ definitions:
     properties:
       id:
         type: string
+        x-mock: id
       name:
         type: string
         enum: ['Life is Like a boat', '奔']
@@ -284,6 +285,7 @@ definitions:
     properties:
       id:
         type: string
+        x-mock: id
       name:
         type: string
         enum: ['孙燕姿']
@@ -300,7 +302,7 @@ definitions:
     properties:
       total:
         type: number
-        enum: [31] # 测试分页
+        x-mock: pager
         description: 总共多少条
   SuccessResponse:
     properties:
